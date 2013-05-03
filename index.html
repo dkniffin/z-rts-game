@@ -1,0 +1,60 @@
+<html>
+   <head>
+      <link rel="stylesheet" href="lib/css/leaflet/leaflet.css" />
+      <link rel="stylesheet" href="lib/css/leaflet/locationfilter.css" />
+      <!--[if lte IE 8]>
+         <link rel="stylesheet" href="lib/css/leaflet.ie.css" />
+      <![endif]-->
+      <script type="text/javascript" src="lib/js/jquery-1.9.1.min.js"></script>
+      <script type="text/javascript" src="lib/js/leaflet/leaflet.js"></script>
+      <script type="text/javascript" src="lib/js/leaflet/locationfilter.js"></script>
+      <script type="text/javascript" src="lib/js/person.js"></script>
+      <style>
+         #map{
+            width: 100%;
+            height: 100%;
+         }
+      </style>
+
+      <script>
+         $('document').ready(function(){
+            /*var bob = new Person({
+               "firstname": "Bob",
+               "lastname": "Smith"
+            });*/
+            var basemap = L.tileLayer('http://{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg',{
+               maxZoom: 21,
+               subdomains: ['otile1','otile2','otile3','otile4'],
+               attribution: "Tiles Courtesy of <a href=\"http://www.mapquest.com/\" target=\"_blank\">MapQuest</a> <img src=\"http://developer.mapquest.com/content/osm/mq_logo.png\">; Map data &copy; <a href='http://openstreetmap.org'>OpenStreetMap</a> contributors"
+            });
+            var map = L.map('map', {
+               center: new L.LatLng(39.75,-105.0),
+               zoom: 14,
+               zoomControl: true,
+               layers: [basemap]
+            });
+            //var map = L.map('map').setView([39,-105]);
+            var locationFilter = new L.LocationFilter({
+               "enable":true
+            }).addTo(map);
+            locationboxBounds = locationFilter.getBounds();
+            locationFilter.on("change", function(e){
+               locationboxBounds = e.bounds;
+            });
+
+         });
+         var locationboxBounds;
+         /*
+         function exportClick(){
+            // Export the geojson file for those bounds...
+            console.log(locationboxBounds.toBBoxString());
+         }
+         */
+      </script>
+   </head>
+   <body>
+      <h1>Pick your playable area</h1>
+      <!--<button href="#" onclick="exportClick()">Export</button>-->
+      <div id="map"></div>
+   </body>
+</html>

@@ -1,12 +1,12 @@
 <html>
    <head>
-      <link rel="stylesheet" href="lib/css/leaflet/leaflet.css" />
+      <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
       <link rel="stylesheet" href="lib/css/leaflet/locationfilter.css" />
       <!--[if lte IE 8]>
-         <link rel="stylesheet" href="lib/css/leaflet.ie.css" />
+         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" />
       <![endif]-->
       <script type="text/javascript" src="lib/js/jquery-1.9.1.min.js"></script>
-      <script type="text/javascript" src="lib/js/leaflet/leaflet.js"></script>
+      <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
       <script type="text/javascript" src="lib/js/leaflet/locationfilter.js"></script>
       <script type="text/javascript" src="lib/js/person.js"></script>
       <style>
@@ -41,6 +41,20 @@
             locationFilter.on("change", function(e){
                locationboxBounds = e.bounds;
             });
+
+            var zombieIcon = L.icon({
+               iconUrl: 'lib/img/zombie-tmp.png'
+            });
+            var humanIcon = L.icon({
+               iconUrl: 'lib/img/human-tmp.png',
+               iconSize: [19,19]
+            });
+
+            L.marker([39.7493, -104.991], {icon: zombieIcon}).addTo(map);
+            L.marker([39.7495, -104.992], {icon: zombieIcon}).addTo(map);
+            L.marker([39.7495, -104.990], {icon: zombieIcon}).addTo(map);
+
+            L.marker([39.7495, -104.980], {icon: humanIcon}).addTo(map);
 
          });
          var locationboxBounds;

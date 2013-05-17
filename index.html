@@ -1,12 +1,14 @@
 <html>
    <head>
-      <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+      <!--<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />-->
       <link rel="stylesheet" href="lib/css/leaflet/locationfilter.css" />
+      <link href='http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.css' rel='stylesheet' />
       <!--[if lte IE 8]>
-         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" />
+         <link href='http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.css' rel='stylesheet' />
       <![endif]-->
       <script type="text/javascript" src="lib/js/jquery-1.9.1.min.js"></script>
-      <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+      <!--<script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>-->
+      <script src='http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.js'></script>
       <script type="text/javascript" src="lib/js/leaflet/locationfilter.js"></script>
       <script type="text/javascript" src="lib/js/person.js"></script>
       <style>
@@ -22,17 +24,12 @@
                "firstname": "Bob",
                "lastname": "Smith"
             });*/
-            var basemap = L.tileLayer('http://{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg',{
-               maxZoom: 21,
-               subdomains: ['otile1','otile2','otile3','otile4'],
-               attribution: "Tiles Courtesy of <a href=\"http://www.mapquest.com/\" target=\"_blank\">MapQuest</a> <img src=\"http://developer.mapquest.com/content/osm/mq_logo.png\">; Map data &copy; <a href='http://openstreetmap.org'>OpenStreetMap</a> contributors"
-            });
-            var map = L.map('map', {
+            var map = L.mapbox.map('map', 'oddityoverseer13.map-y6b598y4',{
                center: new L.LatLng(39.75,-105.0),
                zoom: 14,
-               zoomControl: true,
-               layers: [basemap]
+               zoomControl: true
             });
+            /*
             //var map = L.map('map').setView([39,-105]);
             var locationFilter = new L.LocationFilter({
                "enable":true
@@ -41,6 +38,7 @@
             locationFilter.on("change", function(e){
                locationboxBounds = e.bounds;
             });
+            */
 
             var zombieIcon = L.icon({
                iconUrl: 'lib/img/zombie-tmp.png'

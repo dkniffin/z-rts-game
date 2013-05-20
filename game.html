@@ -1,0 +1,65 @@
+<html>
+   <head>
+      <!-- CSS Includes -->
+      <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+      <link href='lib/css/jquery/swanky-purse/jquery-ui-1.10.3.custom.min.css' rel='stylesheet' />
+      <!--[if lte IE 8]>
+         <link href='http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.css' rel='stylesheet' />
+      <![endif]-->
+      <link rel="stylesheet" href=lib/css/custom.css />
+	  
+      <!-- JS Includes -->
+      <!-- JQuery -->
+      <script type="text/javascript" src="lib/js/jquery/jquery-1.9.1.js"></script>
+      <script type="text/javascript" src="lib/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>
+	  
+      <!-- Leaflet -->
+      <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+      <!--<script src='http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.js'></script>-->
+	  
+      <!-- Socket.io -->
+      <!--<script type="text/javascript" src="lib/js/socket.io/socket.io-client.js"></script>-->
+	  
+      <!-- Custom -->
+      <script type="text/javascript" src="lib/js/custom/person.js"></script>
+	  
+	  
+      <style>
+      </style>
+
+      <script>
+         $('document').ready(function(){
+            var basemap = L.tileLayer('http://{s}.tiles.mapbox.com/v3/oddityoverseer13.map-y6b598y4/{z}/{x}/{y}.png');
+            var map = L.map('map',{
+               center: new L.LatLng(39.75,-105.0),
+               zoom: 14,
+               zoomControl: true,
+               layers: [basemap],
+               minZoom: 10
+               //maxBounds: new L.LatLngBounds(new L.LatLng(,0), new L.LatLng(0,0))
+            });
+
+            var joe = new Person({
+               firstName: 'Joe',
+               lastName: 'Schmoe'
+            });
+
+            joe.render(map);
+
+         });
+      </script>
+   </head>
+   <body>
+      <div id='header'>
+         <div id='resources'>
+         </div>
+         <div id='top-right'>
+            <p>USERNAME</p>
+         </div>
+      </div>
+      <div id='main-content'>
+         <div id='map'></div>
+         <div id='popup'></div>
+      </div>
+   </body>
+</html>

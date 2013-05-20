@@ -1,0 +1,81 @@
+<html>
+   <head>
+      <!-- CSS Includes -->
+      <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+      <link rel="stylesheet" href="lib/css/leaflet/locationfilter.css" />
+      <link href='http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.css' rel='stylesheet' />
+	  <link href='lib/css/jquery/swanky-purse/jquery-ui-1.10.3.custom.min.css' rel='stylesheet' />
+      <!--[if lte IE 8]>
+         <link href='http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.css' rel='stylesheet' />
+      <![endif]-->
+      <link rel="stylesheet" href=lib/css/custom.css />
+	  
+      <!-- JS Includes -->
+      <!-- JQuery -->
+      <script type="text/javascript" src="lib/js/jquery/jquery-1.9.1.js"></script>
+      <script type="text/javascript" src="lib/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>
+	  
+      <!-- Leaflet -->
+      <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+      <!--<script src='http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.js'></script>-->
+      <script type="text/javascript" src="lib/js/leaflet/locationfilter.js"></script>
+	  
+      <!-- Socket.io -->
+      <!--<script type="text/javascript" src="lib/js/socket.io/socket.io-client.js"></script>-->
+	  
+      <!-- Custom -->
+      <!--<script type="text/javascript" src="lib/js/main.js"></script>-->
+	  
+      <script>
+         $('document').ready(function(){
+            var basemap = L.tileLayer('http://{s}.tiles.mapbox.com/v3/oddityoverseer13.map-y6b598y4/{z}/{x}/{y}.png');
+            var map = L.map('map',{
+               center: new L.LatLng(39.75,-105.0),
+               zoom: 14,
+               zoomControl: true,
+               layers: [basemap],
+               minZoom: 10
+               //maxBounds: new L.LatLngBounds(new L.LatLng(,0), new L.LatLng(0,0))
+            });
+            var startMarker = L.marker([39.75,-105.0],{
+               draggable: true
+            });
+            startMarker.on('dragend',function(){
+               $('#start_location').val(startMarker.getLatLng().toString());
+            });
+            startMarker.addTo(map);
+
+            var locationFilter = new L.LocationFilter({
+               enable: true
+            }).addTo(map);
+            //console.log(locationFilter.getBounds());
+            $('#bounds').val(locationFilter.getBounds().toBBoxString());
+            locationFilter.on("change", function (e) {
+               // Do something when the bounds change.
+               // Bounds are available in `e.bounds`.
+               $('#bounds').val(e.bounds.toBBoxString());
+            });
+            $('#bounds').change(function(){
+               // Needs some work
+               //locationFilter.setBounds(L.LatLngBounds($('#bounds').val()));
+            });
+         });
+
+      </script>
+   </head>
+   <body>
+      <div id='header'>
+         <h1>Pick your playable area</h1>
+      </div>
+      <div id='sidebar'>
+         <form name='create' action='server/create-game.php' method='post'>
+            <label for=bounds>Bounds</label><input type=text id=bounds name='bounds' readOnly /><br />
+            <label for=start_location>Start Location</label><input type=text id=start_location name='start_location' readOnly /><br />
+            <input type=submit value='Create Game'>
+         </form>
+      </div>
+      <div id='main-content-new-game'>
+         <div id="map"></div>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,13 @@
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io.connect('http://localhost:1113');
+
+  function send(){
+     socket.emit('send', 'blah');
+  }
+  
+</script>
+<form name="frm1" action="submit.htm" onsubmit="send()">
+<input type="text" name="fname">
+<input type="submit" value="Submit">
+</form>

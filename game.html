@@ -16,23 +16,60 @@
       <!-- Leaflet -->
       <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
       <!--<script src='http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.js'></script>-->
+      <script type="text/javascript" src="lib/js/leaflet/L.BuildingsLayer.js"></script>
 	  
       <!-- Socket.io -->
-      <!--<script type="text/javascript" src="lib/js/socket.io/socket.io-client.js"></script>-->
+      <script type="text/javascript" src="lib/js/socket.io/socket.io.js"></script>
 	  
       <!-- Custom -->
       <script type="text/javascript" src="lib/js/custom/person.js"></script>
 	  
 	  
       <style>
+         #chat{
+            width: 500px;
+            height: 300px;
+            position: absolute;
+            bottom: 5;
+            left: 5;
+            background-color:rgba(0,0,0,0.5);
+         }
+         #chat p{
+            margin: 0;
+            //padding: 5;
+            font-size:10px;
+            color: white;
+         }
+         #chat-messages{
+            height: 240px;
+            padding: 5px;
+            border-bottom: 1px solid black;
+         }
+         #chat-sender{
+            height:60px;
+            //margin: 5px;//float:right;
+         }
+         #chat-sender input{
+            margin: 5px;
+            width: 390;
+         }
+         #chat-sender button{
+            float: right;
+         }
       </style>
 
       <script>
          $('document').ready(function(){
+            var socket = io.connect('http://wheatley.colorado.edu:1113');
+
+            /* Render map */
             var basemap = L.tileLayer('http://{s}.tiles.mapbox.com/v3/oddityoverseer13.map-y6b598y4/{z}/{x}/{y}.png');
+
+
             var map = L.map('map',{
-               center: new L.LatLng(39.75,-105.0),
-               zoom: 14,
+               //center: new L.LatLng(39.75,-105.0),
+               center: new L.LatLng(40.00622, -105.26636),
+               zoom: 18,
                zoomControl: true,
                layers: [basemap],
                minZoom: 10
@@ -44,8 +81,29 @@
                lastName: 'Schmoe'
             });
 
-            joe.render(map);
 
+            var bldgGeoJSON;
+            socket.emit('getAllBuildings');
+            socket.on('allBuildings', function(data) {
+               bldgGeoJSON = data.bldgs;
+               var osmb = new L.BuildingsLayer().addTo(map).geoJSON(bldgGeoJSON).setStyle({
+                  color: '#800000'
+               });
+            joe.render(map);
+            });
+
+
+
+            /* Set up chat */
+            $('#send-btn').button().click(function(){
+               socket.emit('message', {
+                  message: $('#chat-input').val()
+               });
+               $('#chat-input').val('');
+            });
+            socket.on('update-chat', function(data){
+               $('#chat-messages').append('<p><b>'+data.uname+': </b>'+data.msg+'</p>');
+            });
          });
       </script>
    </head>
@@ -60,6 +118,13 @@
       <div id='main-content'>
          <div id='map'></div>
          <div id='popup'></div>
+         <div id='chat'>
+            <div id='chat-messages'></div>
+            <div id='chat-sender'>
+               <input id='chat-input' />
+               <button id='send-btn' >Send</button>
+            </div>
+         </div>
       </div>
    </body>
 </html>

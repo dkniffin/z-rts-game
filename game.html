@@ -44,6 +44,7 @@
             height: 240px;
             padding: 5px;
             border-bottom: 1px solid black;
+            overflow: auto;
          }
          #chat-sender{
             height:60px;
@@ -60,7 +61,7 @@
 
       <script>
          $('document').ready(function(){
-            var socket = io.connect('http://71.196.229.3:1113');
+            var socket = io.connect('http://wheatley.colorado.edu:1113');
             var setDisplayName = function(displayName){
                socket.emit('setDisplayName',{
                   displayName: displayName
@@ -90,7 +91,7 @@
 
 
             var bldgGeoJSON;
-            socket.emit('getAllBuildings');
+            socket.emit('getBuildings');
             socket.on('allBuildings', function(data) {
                bldgGeoJSON = data.bldgs;
                var osmb = new L.BuildingsLayer().addTo(map).geoJSON(bldgGeoJSON).setStyle({
@@ -139,10 +140,10 @@
          <div id='chat'>
             <div id='chat-messages'></div>
             <div id='chat-sender'>
-			   <form onSubmit='return false;'>
+               <form onSubmit='return false;'>
                   <input id='chat-input' class='txt-field' />
                   <input type=submit id='send-btn' value='Send' class='btn' />
-			   </form>
+               </form>
             </div>
          </div>
       </div>

@@ -58,6 +58,6 @@ exports.setDisplayName = function(socket,data){
   }
 }
 
-exports.checkAuth = function(socket){
-   if (!socket.get('authenticated'){ socket.emit('error', {e: 'Not Authenticated'});
+exports.authCheck = function(authenticated,socket){
+   if (!authenticated){ socket.emit('error', {e: 'Not Authenticated'})};
 }

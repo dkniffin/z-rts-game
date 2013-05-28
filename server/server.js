@@ -1,20 +1,28 @@
-// Include some libraries
-var io = require('socket.io').listen(1113), // Set up socket.io to listen on port 1113
-    mdb = require('./map-db.js'),
+// Set up socket.io to listen on port 1113, and make it available to all custom
+// modules with GLOBAL.io
+GLOBAL.io = require('socket.io').listen(1113) 
+
+// Include custom libraries
+var mdb = require('./map-db.js'),
     gdb = require('./game-db.js'),
     chat = require('./chat.js'),
     usrlib = require('./users.js');
 io.set('log level', 1); // Don't be as detailed in logging
 
 // Set up some global variables
-var users = [];
+var users = []; // Stores currently connected users
 
 /*========================Set up connection handler========================*/
-// New connections
 io.sockets.on('connection', function (socket) {
   console.log('New Connection');
-  var displayName = ''
+
+  // Set some globals for the session
+  var displayName = '';
+  var user = {};
+  var authenticated = true;
+  chat.sendHistory(socket);
   
+  /*======== Reconnect ========*/
   socket.on('reconnect', function(data){
     console.log('A connection is trying to reconnect...');
     if (typeof data.sKey  != "undefined"){
@@ -24,6 +32,7 @@ io.sockets.on('connection', function (socket) {
     }
   });
 
+  /*======== Log in ========*/
   socket.on('auth', function (data){
     console.log('User is authenticating...');
     // A user would like to authenticate
@@ -44,14 +53,14 @@ io.sockets.on('connection', function (socket) {
     }
     
     // Set authenticated to true
-    socket.set('authenticated', true);
+    authenticated = true;
     // Generate a session key
 
     // User is authenticated. Add to array of users, and send back data
-    var user = usrlib.addUser({ username: data.uname });
-    socket.set('user', user);
+    user = usrlib.addUser({ username: data.uname });
   });
   
+  /*======== Set Display Name ========*/
   socket.on('setDisplayName', function(data){
     // A user wants to set their username for chat
     console.log('User wants to change display name to '+data.displayName);
@@ -60,33 +69,45 @@ io.sockets.on('connection', function (socket) {
       }
   });
 
-  var b;
-  socket.on('getAllBuildings', function(data){
-    console.log('client requested all buildings');
-    mdb.getAllBuildings(function(b){
-      socket.emit('allBuildings', {
-        bldgs: b
-      });
-    }); // get the geoJSON for the buildings
+  /*======== New chat message ========*/
+  socket.on('message', function(data){
+    console.log('Message recieved: '+data.message);
+    usrlib.authCheck(authenticated,socket);
+    chat.sendMessage(data.message,displayName);
   });
 
-  socket.on('message', function(data){
-    console.log('message recieved: '+data.message);
-    usrlib.checkAuth(socket);
-     if (typeof data.message != "undefined" && data.message != ''){
-      io.sockets.emit('update-chat', {
-         uname: (typeof displayName != "undefined") ? displayName : "Unknown user",
-         msg: data.message
-      });
-     }
+
+  /*======== Client wants some building data ========*/
+  socket.on('getBuildings', function(data){
+    switch(data.selection) {
+      case 'all':
+        var b;
+        console.log('Request for all buildings');
+        mdb.getAllBuildings(function(b){
+          socket.emit('allBuildings', {
+            bldgs: b
+          });
+        }); 
+        break;
+      case 'bbox':
+        console.log('Request for all buildings in a bbox');
+        break; 
+      case 'player':
+        console.log('Request for all buildings for a player');
+        break; 
+      case 'one':
+        console.log('Request for one building');
+        break; 
+      default:
+        // code
+    }
   });
-  
+
   socket.on('action', function (data) {
-    //if (socket.get('authenticated') == true){
-      // The client has sent some action it'd like to perform
-      // Process the action, and send some updates to all clients
-      actionHandler(data);
-    //}
+    // The client has sent some action it'd like to perform
+    // Process the action, and send some updates to all clients
+    usrlib.authCheck(authenticated,socket);
+    actionHandler(data);
   });
 });
 

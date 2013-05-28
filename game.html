@@ -16,7 +16,7 @@
       <!-- Leaflet -->
       <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
       <!--<script src='http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.js'></script>-->
-      <script type="text/javascript" src="lib/js/leaflet/L.BuildingsLayer.js"></script>
+      <script type="text/javascript" src="lib/js/leaflet/L.BuildingsLayer-debug.js"></script>
 	  
       <!-- Socket.io -->
       <script type="text/javascript" src="lib/js/socket.io/socket.io.js"></script>
@@ -49,18 +49,25 @@
             height:60px;
             //margin: 5px;//float:right;
          }
-         #chat-sender input{
+         #chat-sender .txt-field{
             margin: 5px;
             width: 390;
          }
-         #chat-sender button{
+         #chat-sender .btn{
             float: right;
          }
       </style>
 
       <script>
          $('document').ready(function(){
-            var socket = io.connect('http://wheatley.colorado.edu:1113');
+            var socket = io.connect('http://71.196.229.3:1113');
+            var setDisplayName = function(displayName){
+               socket.emit('setDisplayName',{
+                  displayName: displayName
+               });
+            }
+            
+            //var socket = io.connect('http://wheatley.colorado.edu:1113');
 
             /* Render map */
             var basemap = L.tileLayer('http://{s}.tiles.mapbox.com/v3/oddityoverseer13.map-y6b598y4/{z}/{x}/{y}.png');
@@ -87,18 +94,30 @@
             socket.on('allBuildings', function(data) {
                bldgGeoJSON = data.bldgs;
                var osmb = new L.BuildingsLayer().addTo(map).geoJSON(bldgGeoJSON).setStyle({
-                  color: '#800000'
+                  color: '#800000',
+                  roofColor: '#f22222'
                });
-            joe.render(map);
+               joe.render(map);
+               console.log(map);
             });
 
 
 
             /* Set up chat */
             $('#send-btn').button().click(function(){
-               socket.emit('message', {
-                  message: $('#chat-input').val()
-               });
+               var msgTxt = $('#chat-input').val();
+               var nickRegex = /^\/nick (\w+)$/;
+               if (nickRegex.test(msgTxt)){
+                  var match = nickRegex.exec(msgTxt);
+                  socket.emit('setDisplayName',{
+                     displayName: match[1]
+                  });
+               }
+               else{
+                  socket.emit('message',{
+                     message: msgTxt 
+                  });
+               }
                $('#chat-input').val('');
             });
             socket.on('update-chat', function(data){
@@ -109,8 +128,7 @@
    </head>
    <body>
       <div id='header'>
-         <div id='resources'>
-         </div>
+         <div id='resources'></div>
          <div id='top-right'>
             <p>USERNAME</p>
          </div>
@@ -121,8 +139,10 @@
          <div id='chat'>
             <div id='chat-messages'></div>
             <div id='chat-sender'>
-               <input id='chat-input' />
-               <button id='send-btn' >Send</button>
+			   <form onSubmit='return false;'>
+                  <input id='chat-input' class='txt-field' />
+                  <input type=submit id='send-btn' value='Send' class='btn' />
+			   </form>
             </div>
          </div>
       </div>

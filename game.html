@@ -24,6 +24,7 @@
 	  
       <!-- Custom -->
       <script type="text/javascript" src="lib/js/custom/person.js"></script>
+      <script type="text/javascript" src="lib/js/custom/ws-listener.js"></script>
 	  
 	  
       <style>
@@ -62,7 +63,6 @@
 
       <script>
          $('document').ready(function(){
-            var socket = io.connect('http://wheatley.colorado.edu:1113');
             var setDisplayName = function(displayName){
                socket.emit('setDisplayName',{
                   displayName: displayName
@@ -93,24 +93,13 @@
 
             var bldgGeoJSON;
             socket.emit('getBuildings',{
-               selection: 'all'
-            });
-            socket.on('allBuildings', function(data) {
-               bldgGeoJSON = data.bldgs;
-               var osmb = new L.BuildingsLayer().addTo(map).geoJSON(bldgGeoJSON).setStyle({
-                  color: '#800000',
-                  roofColor: '#f22222'
-               });
-               joe.render(map);
-               console.log(map);
+               //selection: 'all'
+               selection: 'bbox'
             });
 
             setTimeout(function(){
                joe.startMovement();
             },3000);
-
-
-
 
             /* Set up chat */
             $('#send-btn').button().click(function(){
@@ -123,14 +112,11 @@
                   });
                }
                else{
-                  socket.emit('message',{
+                  socket.emit('sendMessage',{
                      message: msgTxt 
                   });
                }
                $('#chat-input').val('');
-            });
-            socket.on('update-chat', function(data){
-               $('#chat-messages').append('<p><b>'+data.uname+': </b>'+data.msg+'</p>');
             });
          });
       </script>

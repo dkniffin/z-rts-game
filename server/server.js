@@ -4,7 +4,7 @@ GLOBAL.io = require('socket.io').listen(1113)
 
 // Include custom libraries
 var mdb = require('./map-db.js'),
-    gdb = require('./game-db.js'),
+    gdb = require('./game-data.js'),
     chat = require('./chat.js'),
     usrlib = require('./users.js');
 io.set('log level', 1); // Don't be as detailed in logging
@@ -79,6 +79,9 @@ io.sockets.on('connection', function (socket) {
 
   /*======== Client wants some building data ========*/
   socket.on('getBuildings', function(data){
+    // TODO: Check for selection
+
+    // Do things based on the selection value
     switch(data.selection) {
       case 'all':
         var b;

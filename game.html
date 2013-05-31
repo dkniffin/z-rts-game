@@ -93,9 +93,20 @@
 
             var bldgGeoJSON;
             socket.emit('getBuildings',{
-               //selection: 'all'
-               selection: 'bbox'
-            });
+               selection: 'all'
+               //selection: 'bbox'
+            },function(data){
+	       // The server has return some buildings; display them
+	       bldgGeoJSON = data.bldgs;
+               console.log(data);
+	       var osmb = new L.BuildingsLayer()
+	       .addTo(map).geoJSON(bldgGeoJSON).setStyle({
+			color: '#800000',
+			roofColor: '#f22222'
+	       });
+	       joe.render(map);
+	       console.log(map);
+	    });
 
             setTimeout(function(){
                joe.startMovement();

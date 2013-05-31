@@ -6,7 +6,8 @@ GLOBAL.io = require('socket.io').listen(1113);
 var mdb = require('./map-db.js'),
     gdb = require('./game-data.js'),
     chat = require('./chat.js'),
-    usrlib = require('./users.js');
+    usrlib = require('./users.js'),
+    game = require('./engine.js')
 io.set('log level', 1); // Don't be as detailed in logging
 
 // Set up some global variables
@@ -34,7 +35,7 @@ io.sockets.on('connection', function (socket) {
 
   /*======== Error function ========*/
   function handleError(errorText){
-    console.log(errorText);
+    console.log('ERROR: '+errorText);
     socket.emit('error', {
       e: errorText
     });
@@ -99,7 +100,7 @@ io.sockets.on('connection', function (socket) {
 
 
   /*======== Client wants some building data ========*/
-  socket.on('getBuildings', function(data){
+  socket.on('getBuildings', function(data,callback){
     // Check for selection
     if (!isSet(data.selection)){
       handleError('A selection must be defined to get buildings');
@@ -111,9 +112,7 @@ io.sockets.on('connection', function (socket) {
         var b;
         console.log('Request for all buildings');
         mdb.getAllBuildings(function(b){
-          socket.emit('retBuildings', {
-            bldgs: b
-          });
+          callback({bldgs:b});
         }); 
         break;
       case 'bbox':
@@ -131,31 +130,82 @@ io.sockets.on('connection', function (socket) {
     }
   });
   
+  /*======== Game data getters ========*/
+  socket.on('getUnitDetails',function(data,callback){
+    // Get the Unit's bio, portrait, etc
+	
+	// Call the callback on that data
+  });
+  socket.on('getUnitStats',function(data,callback){
+    // Get the Unit's health, armor, fatigue, etc
+	
+	// Call the callback on that data
+  });
+  socket.on('getUnitSkills',function(data,callback){
+    // Get the Unit's WP (melee), WP (ranged), Medical, etc (skill levels)
+	
+	// Call the callback on that data
+  });
+  socket.on('getUnitInventory',function(data,callback){
+    // Get the Unit's equipped items and backpack contents
+	
+	// Call the callback on that data
+  });
+  socket.on('getBuildingStats',function(data,callback){
+    // Get the Building's health, armor, etc
+	
+	// Call the callback on that data
+  });
+  socket.on('getBuildingOccupants',function(data,callback){
+    // Get the a list of units contained in the building
+	
+	// Call the callback on that data
+  });
+  socket.on('getBuildingVehicles',function(data,callback){
+    // Get the a list of vehicles contained in the building
+	
+	// Call the callback on that data
+  });
+  socket.on('getUnitsInBbox',function(data,callback){
+    // Get the a list of known units that are within bbox 
+    // (don't get the ones that aren't visible to the player)
+	
+	// Call the callback on that data
+  });
+  socket.on('getVehiclesInBbox',function(data,callback){
+    // Get the a list of known vehicles that are within bbox
+    // (don't get the ones that aren't visible to the player)
+	
+	// Call the callback on that data
+  });
+  socket.on('getZombiesInBbox',function(data,callback){
+    // Get the a list of known zombies in the bbox
+    // (don't get the ones that aren't visible to the player)
+	
+	// Call the callback on that data
+  });
+  
   /*======== Game controls ========*/
-  socket.on('moveUnit',{
+  socket.on('moveUnit',function(data){
     // User would like to move a unit
     if (!isSet(data.unitId)){
-      handleError('To move a unit, you have to specify the unitId');
+      handleError('To move a unit, you must specify the unitId');
     }
     if (!isSet(data.newLoc)){
-
+      handleError('To move a unit, you must specify a newLoc');
     }
-  
+    game.moveUnit(data.unitId,data.newLoc);
   });
-  socket.on('attackTarget',{});
-  socket.on('upgradeBuilding',{});
+  socket.on('attackTarget',function(data){
+    if (!isSet(data.unitId)){
+      handleError('To attack something, you must specify an attacking unitId');
+    }
+    if (!isSet(data.targetId)){
+      handleError('To attack something, you must specify a targetId');
+    }
+    game.attackTarget(unitId,targetId);
+  });
+  socket.on('upgradeBuilding',function(data){
+      
+  });
 });
-
-/*========================Action Handlers========================*/
-
-var actionHandler = function(data){
-  switch(data.a)
-  {
-  case 'mv':
-    break;
-  case 'atk':
-    // User would like to attack something
-    break;
-  }
-  return;
-}

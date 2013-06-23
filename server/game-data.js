@@ -15,26 +15,36 @@ var nextZombieId = 0;
 exports.newUnit = function(options){
   var nUnit = new Unit(nextUnitId,options);
   nextUnitId++;
-  units.push(nUnit);
+  exports.units.push(nUnit);
   return nUnit;
 }
 
 exports.getUnitById = function(id){
-   units.forEach(function(unit){
+   exports.units.forEach(function(unit){
       if(unit.id == id) return unit;
    });
+}
+
+exports.getUnitsByPlayerId = function(playerId){
+  var retUnits = [];
+  exports.units.forEach(function(unit){
+    if(unit.player.id == playerId){
+      retUnits.push(unit);
+    }
+  });
+  return retUnits
 }
 
 // Vehicles
 exports.newVehicle = function(options){
   var nVehicle = new Vehicle(nextVehicleId,options);
   nextVehicleId++;
-  vehicles.push(nVehicle);
+  exports.vehicles.push(nVehicle);
   return nVehicle;
 }
 
 exports.getVehicleById = function(id){
-   vehicles.forEach(function(vehicle){
+   exports.vehicles.forEach(function(vehicle){
       if(vehicles.id == id) return vehicle;
    });
 }
@@ -43,12 +53,12 @@ exports.getVehicleById = function(id){
 exports.newPlayer = function(options){
   var nPlayer = new Player(nextPlayerId,options);
   nextPlayerId++;
-  players.push(nPlayer);
+  exports.players.push(nPlayer);
   return nPlayer;
 }
 
 exports.getPlayerById = function(id){
-   units.forEach(function(player){
+   exports.players.forEach(function(player){
       if(player.id == id) return player;
    });
 }
@@ -57,12 +67,12 @@ exports.getPlayerById = function(id){
 exports.newZombie = function(options){
   var nZombie = new Zombie(nextZombieId,options);
   nextZombieId++;
-  zombies.push(nZombie);
+  exports.zombies.push(nZombie);
   return nZombie;
 }
 
 exports.getZombieById = function(id){
-   zombies.forEach(function(zombie){
+   exports.zombies.forEach(function(zombie){
       if(zombie.id == id) return zombie;
    });
 }

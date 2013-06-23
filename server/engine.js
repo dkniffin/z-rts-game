@@ -4,12 +4,41 @@ var data = require('./game-data.js');
 
 exports.startGame = function(options){
    // Options
-      // 
    // Sets up anything that needs to be done before the game starts
    // For example, it'll have to read in users chosen characters and start
    //  locations, and set staart locations for the remaining characters.
    //  It'll probably also have to generate the other "non-named" characters,
    //  zombies, etc.
+
+
+   // For now, we'll set up some fake test data
+   data.newUnit({
+      playerId: 1,
+      firstName: "Joe",
+      lastName: "Schmoe",
+      lat: 40.00622,
+      lon: -105.266
+   });
+
+   data.newUnit({
+      playerId: 1,
+      firstName: "Gabriel",
+      lastName: "Martinez",
+      lat: 40.00622,
+      lon: -105.264
+   });
+
+   data.newUnit({
+      playerId: 1,
+      firstName: "Sally",
+      lastName: "Mae",
+      lat: 40.0062,
+      lon: -105.2645
+   });
+}
+
+exports.gameData = function(){
+   return data;
 }
 
 exports.moveUnit = function(options){

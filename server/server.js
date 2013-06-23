@@ -4,7 +4,6 @@ GLOBAL.io = require('socket.io').listen(1113);
 
 // Include custom libraries
 var mdb = require('./map-db.js'),
-    gdb = require('./game-data.js'),
     chat = require('./chat.js'),
     usrlib = require('./users.js'),
     game = require('./engine.js')
@@ -22,6 +21,9 @@ function isSet(variable){
        return false;
    }
 }
+
+/*========================Start Game========================*/
+game.startGame();
 
 /*========================Set up connection handler========================*/
 io.sockets.on('connection', function (socket) {
@@ -169,8 +171,20 @@ io.sockets.on('connection', function (socket) {
   socket.on('getUnitsInBbox',function(data,callback){
     // Get the a list of known units that are within bbox 
     // (don't get the ones that aren't visible to the player)
-	
-	// Call the callback on that data
+
+    // First, validate that bbox was sent
+    if (!isSet(data.bbox)){
+      handleError('To get units in a bbox, a bbox must be sent to the server');
+    }
+
+    var retUnits = [];
+
+    game.gameData().units.forEach(function(unit){
+      // Call the callback on each unit
+      retUnits.push(unit);
+    });
+
+    callback(retUnits);
   });
   socket.on('getVehiclesInBbox',function(data,callback){
     // Get the a list of known vehicles that are within bbox

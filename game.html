@@ -70,7 +70,6 @@
                });
             }
             
-            
             /* Render map */
             var basemap = L.tileLayer('http://{s}.tiles.mapbox.com/v3/oddityoverseer13.map-y6b598y4/{z}/{x}/{y}.png');
 
@@ -100,11 +99,6 @@
                   });
                }
             });
-            
-            var joe = new Person({
-               firstName: 'Joe', 
-               lastName: 'Schmoe' 
-            });
 
             var bldgGeoJSON;
             socket.emit('getBuildings',{
@@ -118,13 +112,25 @@
 			color: '#800000',
 			roofColor: '#f22222'
 	       });
-	       joe.render(map);
 	    });
 
-            
-            setTimeout(function(){
-               joe.startMovement();
-            },3000);
+            var southWest = new L.LatLng(39.96,-105.30);
+            var northEast = new L.LatLng(40.05,-105.19);
+            var mapLimits = new L.LatLngBounds(southWest, northEast);
+
+            socket.emit('getUnitsInBbox',{
+               bbox: mapLimits
+            },function(units){
+               units.forEach(function(unit){
+                  // Create a new client unit object
+                  var p = new Person({
+                     id: unit.id,
+                     lon: unit.lon,
+                     lat: unit.lat
+                  });
+                  p.render(map);
+               });
+            });
 
             /* Set up chat */
             $('#send-btn').button().click(function(){

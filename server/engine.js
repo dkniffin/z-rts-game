@@ -1,6 +1,17 @@
 var data = require('./game-data.js');
 // https://github.com/troygoode/node-roll
 
+
+exports.startGame = function(options){
+   // Options
+      // 
+   // Sets up anything that needs to be done before the game starts
+   // For example, it'll have to read in users chosen characters and start
+   //  locations, and set staart locations for the remaining characters.
+   //  It'll probably also have to generate the other "non-named" characters,
+   //  zombies, etc.
+}
+
 exports.moveUnit = function(options){
    // Options
       // unitId
@@ -49,7 +60,7 @@ exports.upgradeBuilding = function(options){
          // Functionality
             // Open a shop
                // Trade shop
-               //
+   // Process the options and change game-data appropriately
 }
 
 exports.zombieMovement = function(options){

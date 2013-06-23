@@ -17,12 +17,13 @@
       <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
       <!--<script src='http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.js'></script>-->
       <script type="text/javascript" src="lib/js/leaflet/L.BuildingsLayer-debug.js"></script>
-      <script type="text/javascript" src="lib/js/leaflet/AnimatedMarker.js"></script>
+      <script type="text/javascript" src="lib/js/leaflet/AnimatedMarker-test.js"></script>
 	  
       <!-- Socket.io -->
       <script type="text/javascript" src="lib/js/socket.io/socket.io.js"></script>
 	  
       <!-- Custom -->
+      <script type="text/javascript" src="lib/js/custom/main.js"></script>
       <script type="text/javascript" src="lib/js/custom/person.js"></script>
       <script type="text/javascript" src="lib/js/custom/ws-listener.js"></script>
 	  
@@ -69,8 +70,7 @@
                });
             }
             
-            //var socket = io.connect('http://wheatley.colorado.edu:1113');
-
+            
             /* Render map */
             var basemap = L.tileLayer('http://{s}.tiles.mapbox.com/v3/oddityoverseer13.map-y6b598y4/{z}/{x}/{y}.png');
 
@@ -81,15 +81,30 @@
                zoom: 18,
                zoomControl: true,
                layers: [basemap],
-               minZoom: 10
+               minZoom: 10,
+               boxZoom: false
                //maxBounds: new L.LatLngBounds(new L.LatLng(,0), new L.LatLng(0,0))
             });
-
-            var joe = new Person({
-               firstName: 'Joe',
-               lastName: 'Schmoe'
+            map.on("click", function(e){
+               if (!window.event.shiftKey){
+                  globalGameData.deselectAll();
+               }
             });
 
+            map.on("contextmenu", function(e){// On right click
+               // If there are units selected, act accordingly
+               if (globalGameData.selectedUnits != []){
+                  globalGameData.forEachSelectedUnit(function(unit){
+                     unit.stopMovement();
+                     unit.moveTo(e.latlng);
+                  });
+               }
+            });
+            
+            var joe = new Person({
+               firstName: 'Joe', 
+               lastName: 'Schmoe' 
+            });
 
             var bldgGeoJSON;
             socket.emit('getBuildings',{
@@ -98,16 +113,15 @@
             },function(data){
 	       // The server has return some buildings; display them
 	       bldgGeoJSON = data.bldgs;
-               console.log(data);
 	       var osmb = new L.BuildingsLayer()
 	       .addTo(map).geoJSON(bldgGeoJSON).setStyle({
 			color: '#800000',
 			roofColor: '#f22222'
 	       });
 	       joe.render(map);
-	       console.log(map);
 	    });
 
+            
             setTimeout(function(){
                joe.startMovement();
             },3000);

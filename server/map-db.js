@@ -27,7 +27,6 @@ exports.getAllBuildings = function(callback){
       callback(fc);
     });
     query.on('end', function(){
-      console.log('close');
     });
   });
 }

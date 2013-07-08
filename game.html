@@ -118,11 +118,13 @@
             var northEast = new L.LatLng(40.05,-105.19);
             var mapLimits = new L.LatLngBounds(southWest, northEast);
 
+            console.log("Getting all units");
             socket.emit('getUnitsInBbox',{
                bbox: mapLimits
             },function(units){
                units.forEach(function(unit){
                   // Create a new client unit object
+                  console.log("adding a unit to the map"+unit.lat+unit.lon);
                   var p = new Person({
                      id: unit.id,
                      lon: unit.lon,

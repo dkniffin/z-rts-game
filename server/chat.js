@@ -15,9 +15,7 @@ exports.sendMessage = function(message,from){
 }
 
 exports.sendHistory = function(socket){
-  console.log('Sending user chatHist');
   chatHist.forEach(function(id){
-    console.lot('sending a message');
     socket.emit('update-chat', {
       uname: id.from,
       msg: id.message

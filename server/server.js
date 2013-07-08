@@ -112,7 +112,6 @@ io.sockets.on('connection', function (socket) {
     switch(data.selection) {
       case 'all':
         var b;
-        console.log('Request for all buildings');
         mdb.getAllBuildings(function(b){
           callback({bldgs:b});
         }); 

@@ -32,7 +32,7 @@ io.sockets.on('connection', function (socket) {
   // Set some globals for the session
   var displayName = '';
   var username = '';
-  var authenticated = true;
+  var authenticated = false;
   chat.sendHistory(socket);
 
   /*======== Error function ========*/
@@ -55,7 +55,6 @@ io.sockets.on('connection', function (socket) {
 
   /*======== Log in ========*/
   socket.on('auth', function (data){
-    console.log('User is authenticating...');
     // A user would like to authenticate
 
     // Check to see if the sent the right data; else return error.
@@ -86,6 +85,13 @@ io.sockets.on('connection', function (socket) {
     game.newPlayer({username: username}); // Create the new player
     displayName = username;
     io.sockets.emit('userJoin', {uname: username}); // Send out a "new user" event to all users
+  });
+
+  socket.on('disconnect', function(){
+    console.log('User has disconnected.');
+    if(authenticated){
+      io.sockets.emit('userLeave', {uname: username});
+    }
   });
   
   /*======== Set Display Name ========*/

@@ -1,5 +1,6 @@
 var Unit = require('./classes/unit.js');
 var Vehicle = require('./classes/vehicle.js');
+var Player = require('./classes/player.js');
 
 exports.units = []; // All units
 exports.vehicles = []; // All vehicles
@@ -57,10 +58,15 @@ exports.newPlayer = function(options){
   return nPlayer;
 }
 
-exports.getPlayerById = function(id){
+exports.getPlayerByUsername = function(username){
+  var p;
    exports.players.forEach(function(player){
-      if(player.id == id) return player;
+      if(player.username == username){
+        p = player;
+        return false;
+      }
    });
+   return p;
 }
 
 // Zombies

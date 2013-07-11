@@ -60,6 +60,12 @@
          #chat-sender .btn{
             float: right;
          }
+         #resources {
+            display: inline-block;
+            border-right: 2px solid grey;
+            background: brown;
+            padding: 5px;
+         }
       </style>
 
       <script>
@@ -118,7 +124,7 @@
             var northEast = new L.LatLng(40.05,-105.19);
             var mapLimits = new L.LatLngBounds(southWest, northEast);
 
-            console.log("Getting all units");
+            console.debug("Getting all units");
             socket.emit('getUnitsInBbox',{
                bbox: mapLimits
             },function(units){
@@ -151,12 +157,30 @@
                }
                $('#chat-input').val('');
             });
+
+            /* Update resource vals */
+            console.debug('updating resource vals');
+            socket.emit('getPlayerResourceValues',{
+               username: 'bob'
+            },function(resVals){
+               $('#water-res-val').append(resVals.water);
+               $('#food-res-val').append(resVals.food);
+               $('#gas-res-val').append(resVals.gas);
+               $('#medical-res-val').append(resVals.medical);
+               $('#power-res-val').append(resVals.power);
+            });
          });
       </script>
    </head>
    <body>
       <div id='header'>
-         <div id='resources'></div>
+         <div id='resources'>
+            <span id='water-res-val'>Water: <!-- icon --></span>
+            <span id='food-res-val'>Food: <!-- icon --></span>
+            <span id='gas-res-val'>Gas: <!-- icon --></span>
+            <span id='medical-res-val'>Medical: <!-- icon --></span>
+            <span id='power-res-val'>Power: <!-- icon --></span>
+         </div>
          <div id='top-right'>
             <p>USERNAME</p>
          </div>

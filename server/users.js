@@ -2,6 +2,7 @@
 
 exports.validateAuthData = function(data){
   if (typeof data.uname != "undefined" && typeof data.pwhash != "undefined"){
+    console.log(data.uname+' '+ data.pwhash);
     return true;
   }
   return false;
@@ -10,7 +11,7 @@ exports.validateAuthData = function(data){
 exports.authUser = function(username, pwHash){
   var retVal = {};
 
-  // Check the DB, etc
+  // TODO: authenticate user
 
   retVal.errString = ''; // If there's an error, put the string here.
   retVal.error = false; // true = error, false = no error. For now, no errors

@@ -41,6 +41,13 @@ exports.gameData = function(){
    return data;
 }
 
+exports.newPlayer = function(options){
+   player = data.newPlayer({
+      username: options.username
+   });
+   return player;
+}
+
 exports.moveUnit = function(options){
    // Options
       // unitId

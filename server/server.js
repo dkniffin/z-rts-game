@@ -31,7 +31,7 @@ io.sockets.on('connection', function (socket) {
 
   // Set some globals for the session
   var displayName = '';
-  var user = {};
+  var username = '';
   var authenticated = true;
   chat.sendHistory(socket);
 
@@ -59,9 +59,13 @@ io.sockets.on('connection', function (socket) {
     // A user would like to authenticate
 
     // Check to see if the sent the right data; else return error.
-    if (!users.validateAuthData){
-      handleError('Either username or password was not defined');
+    if (!isSet(data.uname)){
+      handleError('Username is not defined');
       return;
+    }
+    if (!isSet(data.pwhash)){
+      handleError('Pwhash is not defined');
+      return
     }
     
     // data is correct. Authenticate.
@@ -78,7 +82,10 @@ io.sockets.on('connection', function (socket) {
     // TODO: Generate a session key
 
     // User is authenticated. Add to array of users, and send back data
-    user = usrlib.addUser({ username: data.uname });
+    username = data.uname;
+    game.newPlayer({username: username}); // Create the new player
+    displayName = username;
+    io.sockets.emit('userJoin', {uname: username}); // Send out a "new user" event to all users
   });
   
   /*======== Set Display Name ========*/
@@ -197,6 +204,19 @@ io.sockets.on('connection', function (socket) {
 	
 	// Call the callback on that data
   });
+  socket.on('getPlayerResourceValues',function(data,callback){
+    // Get the resource values for the given player
+
+    // First validate that a username was sent
+    if (!isSet(data.username)){
+      handleError('To get a player\'s resource values, a username must be sent to the server');
+    }
+    player = game.gameData().getPlayerByUsername(data.username);
+    var retResources = game.gameData().getPlayerByUsername(data.username).resources;
+
+    // Call the callback on that data
+    callback(retResources);
+  });
   
   /*======== Game controls ========*/
   socket.on('moveUnit',function(data){
@@ -221,4 +241,5 @@ io.sockets.on('connection', function (socket) {
   socket.on('upgradeBuilding',function(data){
       
   });
+
 });

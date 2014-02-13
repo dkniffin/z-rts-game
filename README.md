@@ -1,4 +1,4 @@
-z-rts-game
+z-server
 ==========
 
-Game
+Server for z-rts-game

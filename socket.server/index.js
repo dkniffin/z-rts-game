@@ -4,8 +4,8 @@
 GLOBAL.io = require('socket.io').listen(1113); 
 
 // Include custom libraries
-var mdb = require('./map-db.js'),
-    chat = require('./chat.js'),
+//var mdb = require('./map-db.js'),
+var chat = require('./chat.js'),
     usrlib = require('./users.js'),
     game = require('./engine.js')
 io.set('log level', 1); // Don't be as detailed in logging

@@ -5,4 +5,4 @@ connect.createServer(
 ).listen(8080);
 
 // Start game socket.io server
-require('./socket.server/server.js');
+require('./socket.server/index.js');

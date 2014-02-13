@@ -8,7 +8,10 @@
     "url": "git://github.com/oddityoverseer13/z-server.git"
   },
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "connect": "2.7.x"
+
+  },
   "devDependencies": {},
   "optionalDependencies": {},
   "engines": {

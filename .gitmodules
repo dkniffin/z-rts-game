@@ -1,0 +1,3 @@
+[submodule "html/lib/js/leaflet/Leaflet.AnimatedMarker"]
+	path = html/lib/js/leaflet/Leaflet.AnimatedMarker
+	url = http://github.com/openplans/Leaflet.AnimatedMarker.git

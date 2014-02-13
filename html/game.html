@@ -100,7 +100,6 @@
                // If there are units selected, act accordingly
                if (globalGameData.selectedUnits != []){
                   globalGameData.forEachSelectedUnit(function(unit){
-                     unit.stopMovement();
                      unit.moveTo(e.latlng);
                   });
                }

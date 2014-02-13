@@ -7,7 +7,7 @@ exports.sendMessage = function(message,from){
       from: realFrom 
     });
     console.log('Broadcasting message: '+message+' from '+realFrom);
-    io.sockets.emit('update-chat', {
+    io.sockets.emit('updateChat', {
       uname: realFrom,
       msg: message
     }); 

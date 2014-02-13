@@ -113,37 +113,6 @@ io.sockets.on('connection', function (socket) {
     usrlib.authCheck(authenticated,socket);
     chat.sendMessage(data.message,displayName);
   });
-
-
-  /*======== Client wants some building data ========*/
-  socket.on('getBuildings', function(data,callback){
-    // Check for selection
-    if (!isSet(data.selection)){
-      handleError('A selection must be defined to get buildings');
-    }
-
-    // Do things based on the selection value
-    switch(data.selection) {
-      case 'all':
-        var b;
-        mdb.getAllBuildings(function(b){
-          callback({bldgs:b});
-        }); 
-        break;
-      case 'bbox':
-        console.log('Request for all buildings in a bbox');
-        if (!isSet(data.bbox)){ handleError('A bbox selection must define bbox'); }
-        break; 
-      case 'player':
-        console.log('Request for all buildings for a player');
-        break; 
-      case 'one':
-        console.log('Request for one building');
-        break; 
-      default:
-        handleError('Unrecognized selection');
-    }
-  });
   
   /*======== Game data getters ========*/
   socket.on('getUnitDetails',function(data,callback){
